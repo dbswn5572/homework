@@ -23,3 +23,5 @@ for chart in charts:
         'artist': artist
     }
     db.charts.insert_one(doc)
+
+#commit again
