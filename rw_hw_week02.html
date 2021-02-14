@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Song+Myung&display=swap" rel="stylesheet">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <title>상품 주문</title>
+
+    <style>
+        * {
+            font-family: 'Song Myung', serif;
+        }
+
+        .order {
+            width: 600px;
+            margin: 10px auto;
+        }
+
+        img {
+            width: 600px;
+            border-radius: 10px;
+        }
+
+        .input-group, .info-detail {
+            width: 600px;
+            text-align: center;
+        }
+
+        .info-detail {
+            border: 1px darkgrey dotted;
+            margin-top: 10px;
+        }
+
+        .form-row {
+            margin: 10px auto;
+        }
+
+        .info, .order {
+            margin-top: 20px;
+        }
+
+        h2, h6 {
+            display: inline;
+        }
+
+        .order-btn {
+            display: block;
+            margin: 0 auto;
+            width: 80px;
+        }
+
+        #dollar-rate{
+            color: red;
+        }
+    </style>
+
+    <script>
+        function orderSuccess() {
+            let name = $('#order-name').val();
+            let cnt = $('#order-cnt').val();
+            let address = $('#order-address').val();
+            let phone = $('#order-phone').val();
+
+            if (name === '') {
+                alert("이름을 입력하세요.");
+            } else if (cnt === '') {
+                alert("수량을 입력하세요.")
+            } else if (address === '') {
+                alert("주소를 입력하세요.")
+            } else if (phone === '') {
+                alert("전화번호를 입력하세요.")
+            } else if (!isCellPhone(phone)) {
+                alert("전화번호 입력 형식이 틀립니다.\n010-XXXX-XXXX으로 입력해주세요.");
+
+            }
+
+        }
+
+        function isCellPhone(p) {
+            p = p.split('-').join('');
+            let regPhone = /^((01[1|6|7|8|9])[1-9]+[0-9]{6,7})|(010[1-9][0-9]{7})$/;
+            return regPhone.test(p);
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET", // GET 방식으로 요청한다.
+                url: "https://api.manana.kr/exchange/rate.json",
+                data: {}, // 요청하면서 함께 줄 데이터 (GET 요청시엔 비워두세요)
+                success: function (response) { // 서버에서 준 결과를 response라는 변수에 담음
+                    let rate = response[1]["rate"]
+                    let temp = `원-달러 환율 : ${rate}`
+
+                    $('#dollar-rate').append(temp)
+                }
+            })
+        });
+
+    </script>
+</head>
+<body>
+<div class="order">
+    <img src="http://thumbnail.10x10.co.kr/webimage/image/basic600/207/B002074089-5.jpg?cmd=thumb&w=500&h=500&fit=true&ws=false">
+    <div class="info">
+        <h2 class="name">극세사 밍크 담요</h2>
+        <h6 class="price">할인판매가 : 9,900원</h6>
+        <p class="info-detail">
+            일상에 편안함뿐만 아니라 특별함까지 느낄 수 있도록 <br> 한눈에 그 가치를 알아볼 수 있기 바라는 마음으로 고집스럽게 만듭니다.
+            <br> 베이직하지만 침구 본연의 매력을 통해 어떤 매치나 스타일에도 밸런스를 유지합니다. <br> 이제 당신의 일상에 함께 해보세요!
+        </p>
+    </div>
+    <div class="order">
+        <h2 class="name">주문하기</h2>
+        <div id="dollar-rate"></div>
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">주문자명</div>
+                    </div>
+                    <input type="text" class="form-control" id="order-name">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">수량</div>
+                    </div>
+                    <select class="form-control" id="order-cnt">
+                        <option selected value>-- 수량을 선택하세요 --</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">주소</div>
+                    </div>
+                    <input type="text" class="form-control" id="order-address">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="phone-num input-group-text">전화번호</div>
+                    </div>
+                    <input type="text" class="form-control" id="order-phone">
+                </div>
+            </div>
+
+        </div>
+        <button type="button" onclick="orderSuccess()" class="order-btn btn-outline-dark">주문하기</button>
+    </div>
+</div>
+</body>
+</html>
